@@ -11,7 +11,10 @@ javadoc_repo=${JAVADOC_REPO:=https://github.com/realglobe-Inc/javadoc.git}
 deploy_key=${DEPLOY_KEY:=javadoc-deploy-key.enc}
 
 
-if ! [ -f ${deploy_key} ]; then
+if ! [ -f pom.xml ]; then
+  echo 'no pom.xml' 1>&2
+  exit 1
+elif ! [ -f ${deploy_key} ]; then
   echo "no ${deploy_key}" 1>&2
   exit 1
 elif [ -z "${ENCRYPTION_LABEL}" ]; then
