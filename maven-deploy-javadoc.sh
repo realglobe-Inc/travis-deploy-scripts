@@ -9,6 +9,7 @@
 
 javadoc_repo=${JAVADOC_REPO:=https://github.com/realglobe-Inc/javadoc.git}
 deploy_key=${DEPLOY_KEY:=javadoc-deploy-key.enc}
+work_dir=${WORK_DIR:=.deploy-workspace}
 deployer_name=${DEPLOYER_NAME:=rg-ci}
 deployer_email=${DEPLOYER_EMAIL:=ci@realglobe.jp}
 
@@ -28,29 +29,32 @@ group_id=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="groupId"]
 artifact_id=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="artifactId"]/text()' pom.xml)
 version=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="version"]/text()' pom.xml)
 
+mkdir -p ${work_dir}
 
 # デプロイ用の ssh 鍵を準備する
 encrypted_key_var="encrypted_${ENCRYPTION_LABEL}_key"
 encrypted_iv_var="encrypted_${ENCRYPTION_LABEL}_iv"
 eval encrypted_key=\$${encrypted_key_var}
 eval encrypted_iv=\$${encrypted_iv_var}
-openssl aes-256-cbc -K ${encrypted_key} -iv ${encrypted_iv} -in ${deploy_key} -out deploy-key -d
-chmod 600 deploy-key
+openssl aes-256-cbc -K ${encrypted_key} -iv ${encrypted_iv} -in ${deploy_key} -out ${work_dir}/deploy-key -d
+chmod 600 ${work_dir}/deploy-key
 eval "$(ssh-agent -s)"
-ssh-add deploy-key
+ssh-add ${work_dir}/deploy-key
 
 
 mvn javadoc:javadoc
 
-git clone ${javadoc_repo} javadoc
+javadoc_root_dir=${work_dir}/javadoc
+
+git clone ${javadoc_repo} ${javadoc_root_dir}
 
 group_dir=$(echo ${group_id} | sed 's/\./\//g')
-mkdir -p javadoc/${group_dir}/${artifact_id}
-rm -rf javadoc/${group_dir}/${artifact_id}/${version}
-cp -r target/site/apidocs javadoc/${group_dir}/${artifact_id}/${version}
+mkdir -p ${javadoc_root_dir}/${group_dir}/${artifact_id}
+rm -rf ${javadoc_root_dir}/${group_dir}/${artifact_id}/${version}
+cp -r target/site/apidocs ${javadoc_root_dir}/${group_dir}/${artifact_id}/${version}
 
 (
-  cd javadoc
+  cd ${javadoc_root_dir}
 
   # ディレクトリ列挙用 HTML をつくる
   dir=${group_dir}/${artifact_id}
