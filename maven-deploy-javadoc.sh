@@ -53,7 +53,6 @@ cp -r target/site/apidocs javadoc/${group_dir}/${artifact_id}/${version}
   # ディレクトリ列挙用 HTML をつくる
   dir=${group_dir}/${artifact_id}
   while true; do
-    echo ${dir}
     (
       cd ${dir}
       echo '<html><body><ul>' > index.html
