@@ -57,6 +57,7 @@ cp -r target/site/apidocs javadoc/${group_dir}/${artifact_id}/${version}
     (
       cd ${dir}
       echo '<html><body><ul>' > index.html
+      echo '<li><a href="..">..</a></li>' >> index.html
       for i in $(find . -mindepth 1 -maxdepth 1 -name ".*" -prune -o -type d -printf '%f\n' | sort -V); do
         echo '<li><a href="'${i}'">'${i}'</a></li>' >> index.html
       done
