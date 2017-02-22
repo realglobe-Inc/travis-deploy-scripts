@@ -49,9 +49,19 @@ javadoc_root_dir=${work_dir}/javadoc
 git clone ${javadoc_repo} ${javadoc_root_dir}
 
 group_dir=$(echo ${group_id} | sed 's/\./\//g')
-mkdir -p ${javadoc_root_dir}/${group_dir}/${artifact_id}
-rm -rf ${javadoc_root_dir}/${group_dir}/${artifact_id}/${version}
-cp -r target/site/apidocs ${javadoc_root_dir}/${group_dir}/${artifact_id}/${version}
+javadoc_dir=${javadoc_root_dir}/${group_dir}/${artifact_id}/${version}
+
+if [ -e ${javadoc_dir} ]; then
+  if [ -n "${FORCE_DEPLOY}" ]; then
+    rm -rf ${javadoc_dir}
+  else
+    echo "already exists"
+    exit
+  fi
+fi
+
+mkdir -p $(dirname ${javadoc_dir})
+cp -r target/site/apidocs ${javadoc_dir}
 
 (
   cd ${javadoc_root_dir}
