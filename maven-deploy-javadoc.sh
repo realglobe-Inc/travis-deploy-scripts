@@ -76,7 +76,9 @@ cp -r target/site/apidocs ${javadoc_dir}
     (
       cd ${dir}
       echo '<html><body><ul>' > index.html
-      echo '<li><a href="..">..</a></li>' >> index.html
+      if [ ${dir} != . ]; then
+        echo '<li><a href="..">..</a></li>' >> index.html
+      fi
       for i in $(find . -mindepth 1 -maxdepth 1 -name ".*" -prune -o -type d -printf '%f\n' | sort -V); do
         echo '<li><a href="'${i}'">'${i}'</a></li>' >> index.html
       done
