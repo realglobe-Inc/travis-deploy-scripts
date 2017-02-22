@@ -1,11 +1,15 @@
 #!/bin/sh -e
 
-# Maven プロジェクトで Javadoc を生成して GitHub Pages にデプロイする
+# Maven プロジェクトで Javadoc を生成して GitHub Pages にデプロイする。
 
-# 1. デプロイ用の鍵ペアを用意する
-# 2. 公開鍵を Github の Javadoc 用プロジェクト（デプロイ先）の Deploy Keys に登録する
-# 3. 秘密鍵をデプロイ元プロジェクトディレクトリで travis encrypt-file して追加する
-# 4. Travis CI のデプロイ元プロジェクトの環境変数に ENCRYPTION_LABEL を追加する
+# pom.xml のあるディレクトリで実行する。事前に以下の準備が必要。
+# 1. デプロイ用の鍵ペアを用意する。
+# 2. 公開鍵を Github の Javadoc 用プロジェクト（デプロイ先）の Deploy Keys に登録する。
+# 3. 秘密鍵をデプロイ元プロジェクトディレクトリで travis encrypt-file して追加する。
+# 4. Travis CI のデプロイ元プロジェクトの環境変数に ENCRYPTION_LABEL を追加する。
+
+# 既に同一バージョンの Javadoc がデプロイされている場合はデプロイしない。
+# ただし、環境変数 FORCE_DEPLOY が空でない場合は上書きデプロイする。
 
 javadoc_repo=${JAVADOC_REPO:=https://github.com/realglobe-Inc/javadoc.git}
 deploy_key=${DEPLOY_KEY:=javadoc-deploy-key.enc}
