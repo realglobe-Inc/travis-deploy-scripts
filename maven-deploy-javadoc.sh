@@ -9,6 +9,8 @@
 
 javadoc_repo=${JAVADOC_REPO:=https://github.com/realglobe-Inc/javadoc.git}
 deploy_key=${DEPLOY_KEY:=javadoc-deploy-key.enc}
+deployer_name=${DEPLOYER_NAME:=rg-ci}
+deployer_email=${DEPLOYER_EMAIL:=ci@realglobe.jp}
 
 
 if ! [ -f pom.xml ]; then
@@ -70,8 +72,8 @@ cp -r target/site/apidocs javadoc/${group_dir}/${artifact_id}/${version}
     dir=$(dirname ${dir})
   done
 
-  git config user.name rg-ci
-  git config user.email ci@realglobe.jp
+  git config user.name ${deployer_name}
+  git config user.email ${deployer_email}
   git add -A
   if ! git commit -m "Add javadoc (${group_id}:${artifact_id}:${version})"; then
     echo 'no changes'
