@@ -5,6 +5,8 @@
 # pom.xml のあるディレクトリで実行する。
 
 desc_file=${DESC_FILE:=bintray.json}
+package_repo=${PACKAGE_REPO:=maven}
+package_subject=${PACKAGE_SUBJECT:=realglobe}
 
 
 if ! [ -f pom.xml ]; then
@@ -28,8 +30,8 @@ cat <<EOF > ${desc_file}
 {
   "package": {
     "name": "${artifact_id}",
-    "repo": "maven",
-    "subject": "realglobe"
+    "repo": "${package_repo}",
+    "subject": "${package_subject}"
   },
   "version": {
     "name": "${version}",
