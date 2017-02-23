@@ -34,9 +34,7 @@ cat <<EOF > ${desc_file}
   "version": {
     "name": "${version}",
     "desc": "${version}",
-    "released": "${date}",
-    "vcs_tag": "${version}",
-    "gpgSign": false
+    "released": "${date}"
   },
   "files": [{
     "includePattern": "target/(.*\\\\.jar)",
