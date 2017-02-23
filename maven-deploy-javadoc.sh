@@ -46,8 +46,6 @@ eval "$(ssh-agent -s)"
 ssh-add ${work_dir}/deploy-key
 
 
-mvn javadoc:javadoc
-
 javadoc_root_dir=${work_dir}/javadoc
 
 git clone ${javadoc_repo} ${javadoc_root_dir}
@@ -63,6 +61,8 @@ if [ -e ${javadoc_dir} ]; then
     exit
   fi
 fi
+
+mvn javadoc:javadoc
 
 mkdir -p $(dirname ${javadoc_dir})
 cp -r target/site/apidocs ${javadoc_dir}
