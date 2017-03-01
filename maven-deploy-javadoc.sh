@@ -1,6 +1,6 @@
 #!/bin/sh -e
 
-# Maven プロジェクトで Javadoc を生成して GitHub Pages にデプロイする。
+# Maven プロジェクト生成した Javadoc を GitHub Pages にデプロイする。
 
 # pom.xml のあるディレクトリで実行する。事前に以下の準備が必要。
 # 1. デプロイ用の鍵ペアを用意する。
@@ -11,6 +11,9 @@
 # 既に同一バージョンの Javadoc がデプロイされている場合はデプロイしない。
 # ただし、環境変数 FORCE_DEPLOY が空でない場合は上書きデプロイする。
 
+# target/site/apidocs に Javadoc を生成しておくこと。
+
+
 javadoc_repo=${JAVADOC_REPO:=https://github.com/realglobe-Inc/javadoc.git}
 deploy_key=${DEPLOY_KEY:=javadoc-deploy-key.enc}
 work_dir=${WORK_DIR:=.deploy-workspace}
@@ -20,6 +23,9 @@ deployer_email=${DEPLOYER_EMAIL:=ci@realglobe.jp}
 
 if ! [ -f pom.xml ]; then
   echo 'no pom.xml' 1>&2
+  exit 1
+elif ! [ -d target/site/apidocs ]; then
+  echo "no javadoc direcotry (target/site/apidocs)" 1>&2
   exit 1
 elif ! [ -f ${deploy_key} ]; then
   echo "no ${deploy_key}" 1>&2
@@ -62,7 +68,6 @@ if [ -e ${javadoc_dir} ]; then
   fi
 fi
 
-mvn javadoc:javadoc
 
 mkdir -p $(dirname ${javadoc_dir})
 cp -r target/site/apidocs ${javadoc_dir}

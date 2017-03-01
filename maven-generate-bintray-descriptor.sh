@@ -70,7 +70,7 @@ cat <<EOF > ${desc_file}
     "released": "${version_released}"
   },
   "files": [{
-    "includePattern": "target/(.*\\\\.jar)",
+    "includePattern": "target/(.*\\\\.(jar|aar))",
     "uploadPattern": "/${group_dir}/${artifact_id}/${version}/\$1"${force_deploy_option}
   }, {
     "includePattern": "pom.xml",
