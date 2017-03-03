@@ -10,3 +10,8 @@ deploy:
   script:
     - curl -s https://raw.githubusercontent.com/realglobe-Inc/travis-deploy-scripts/master/SCRIPT | sh
 ```
+
+
+## License
+
+Apache License, Version 2.0
