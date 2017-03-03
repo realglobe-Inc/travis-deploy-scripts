@@ -11,7 +11,7 @@
 # 既に同一バージョンの Javadoc がデプロイされている場合はデプロイしない。
 # ただし、環境変数 FORCE_DEPLOY が空でない場合は上書きデプロイする。
 
-# target/site/apidocs に Javadoc を生成しておくこと。
+# target/site/apidocs か target/apidocs に Javadoc を生成しておくこと。
 
 
 javadoc_repo=${JAVADOC_REPO:=https://github.com/realglobe-Inc/javadoc.git}
@@ -24,15 +24,21 @@ deployer_email=${DEPLOYER_EMAIL:=ci@realglobe.jp}
 if ! [ -f pom.xml ]; then
   echo 'no pom.xml' 1>&2
   exit 1
-elif ! [ -d target/site/apidocs ]; then
-  echo "no javadoc direcotry (target/site/apidocs)" 1>&2
-  exit 1
 elif ! [ -f ${deploy_key} ]; then
   echo "no ${deploy_key}" 1>&2
   exit 1
 elif [ -z "${ENCRYPTION_LABEL}" ]; then
   echo 'no environment variable ENCRYPTION_LABEL' 1>&2
   exit 1
+fi
+
+apidocs_dir=target/site/apidocs
+if ! [ -d ${apidocs_dir} ]; then
+  apidocs_dir=target/apidocs
+  if ! [ -d ${apidocs_dir} ]; then
+    echo "no javadoc direcotry" 1>&2
+    exit 1
+  fi
 fi
 
 group_id=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="groupId"]/text()' pom.xml)
@@ -70,7 +76,7 @@ fi
 
 
 mkdir -p $(dirname ${javadoc_dir})
-cp -r target/site/apidocs ${javadoc_dir}
+cp -r ${apidocs_dir} ${javadoc_dir}
 
 (
   cd ${javadoc_root_dir}
