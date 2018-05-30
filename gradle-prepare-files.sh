@@ -23,6 +23,7 @@
 module_dir=${MODULE_DIR?}
 
 if ! which xmllint > /dev/null; then
+  sudo apt-get update
   sudo apt-get install -y libxml2-utils
 fi
 
